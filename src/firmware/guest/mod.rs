@@ -27,18 +27,18 @@ use std::fs::{File, OpenOptions};
 /// Checks the `fw_err` field on the [GuestRequest](crate::firmware::linux::guest::ioctl::GuestRequest) structure
 /// to make sure that no errors were encountered by the VMM or the AMD
 /// Secure Processor.
-fn check_fw_err(raw_error: RawFwError) -> Result<(), UserApiError> {
+fn map_fw_err(raw_error: RawFwError) -> UserApiError {
     let (upper, lower): (u32, u32) = raw_error.into();
 
     if upper != 0 {
-        Err(VmmError::from(upper))?
+        return VmmError::from(upper).into()
     }
 
     if lower != 0 {
-        Err(FirmwareError::from(lower))?
+        return FirmwareError::from(lower).into()
     }
 
-    Ok(())
+    FirmwareError::UnknownSevError(lower).into()
 }
 
 /// A handle to the SEV-SNP guest device.
@@ -98,10 +98,7 @@ impl Firmware {
         let mut request: GuestRequest<ReportReq, ReportRsp> =
             GuestRequest::new(message_version, &mut input, &mut response);
 
-        SNP_GET_REPORT.ioctl(&mut self.0, &mut request)?;
-
-        // Check request for errors
-        check_fw_err(request.fw_err.into())?;
+        SNP_GET_REPORT.ioctl(&mut self.0, &mut request).map_err(|_|map_fw_err(request.fw_err.into()))?;
 
         // Make sure response status is successful
         if response.status != 0 {
@@ -167,11 +164,10 @@ impl Firmware {
                             &mut ext_report_request,
                             &mut report_response,
                         );
-                    SNP_GET_EXT_REPORT.ioctl(&mut self.0, &mut guest_request_retry)?;
-                    check_fw_err(guest_request_retry.fw_err.into())?;
+                    SNP_GET_EXT_REPORT.ioctl(&mut self.0, &mut guest_request_retry).map_err(|_|map_fw_err(guest_request_retry.fw_err.into()))?;
                 }
                 _ => {
-                    check_fw_err(guest_request.fw_err.into())?;
+                    Err(map_fw_err(guest_request.fw_err.into()))?
                 }
             }
         }
@@ -223,10 +219,7 @@ impl Firmware {
                 &mut ffi_derived_key_response,
             );
 
-            SNP_GET_DERIVED_KEY.ioctl(&mut self.0, &mut request)?;
-
-            // Check request error for errors
-            check_fw_err(request.fw_err.into())?;
+            SNP_GET_DERIVED_KEY.ioctl(&mut self.0, &mut request).map_err(|_| map_fw_err(request.fw_err.into()))?;
         }
 
         // Make sure response status is successfuls

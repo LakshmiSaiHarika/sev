@@ -431,7 +431,7 @@ impl From<SevError> for c_int {
             SevError::RestoreRequired => 0x25,
             SevError::RMPInitFailed => 0x26,
             SevError::InvalidKey => 0x27,
-            SevError::UnknownError => 0x00,
+            SevError::UnknownError => -0x01,
         }
     }
 }
@@ -488,44 +488,7 @@ impl From<u32> for FirmwareError {
     fn from(error: u32) -> FirmwareError {
         match error {
             0x00 => FirmwareError::IoError(io::Error::last_os_error()),
-            0x01 => FirmwareError::KnownSevError(error.into()),
-            0x02 => FirmwareError::KnownSevError(error.into()),
-            0x03 => FirmwareError::KnownSevError(error.into()),
-            0x04 => FirmwareError::KnownSevError(error.into()),
-            0x05 => FirmwareError::KnownSevError(error.into()),
-            0x06 => FirmwareError::KnownSevError(error.into()),
-            0x07 => FirmwareError::KnownSevError(error.into()),
-            0x08 => FirmwareError::KnownSevError(error.into()),
-            0x09 => FirmwareError::KnownSevError(error.into()),
-            0x0A => FirmwareError::KnownSevError(error.into()),
-            0x0B => FirmwareError::KnownSevError(error.into()),
-            0x0C => FirmwareError::KnownSevError(error.into()),
-            0x0D => FirmwareError::KnownSevError(error.into()),
-            0x0E => FirmwareError::KnownSevError(error.into()),
-            0x0F => FirmwareError::KnownSevError(error.into()),
-            0x10 => FirmwareError::KnownSevError(error.into()),
-            0x11 => FirmwareError::KnownSevError(error.into()),
-            0x12 => FirmwareError::KnownSevError(error.into()),
-            0x13 => FirmwareError::KnownSevError(error.into()),
-            0x14 => FirmwareError::KnownSevError(error.into()),
-            0x15 => FirmwareError::KnownSevError(error.into()),
-            0x16 => FirmwareError::KnownSevError(error.into()),
-            0x17 => FirmwareError::KnownSevError(error.into()),
-            0x18 => FirmwareError::KnownSevError(error.into()),
-            0x19 => FirmwareError::KnownSevError(error.into()),
-            0x1A => FirmwareError::KnownSevError(error.into()),
-            0x1B => FirmwareError::KnownSevError(error.into()),
-            0x1C => FirmwareError::KnownSevError(error.into()),
-            0x1D => FirmwareError::KnownSevError(error.into()),
-            0x1F => FirmwareError::KnownSevError(error.into()),
-            0x20 => FirmwareError::KnownSevError(error.into()),
-            0x21 => FirmwareError::KnownSevError(error.into()),
-            0x22 => FirmwareError::KnownSevError(error.into()),
-            0x23 => FirmwareError::KnownSevError(error.into()),
-            0x24 => FirmwareError::KnownSevError(error.into()),
-            0x25 => FirmwareError::KnownSevError(error.into()),
-            0x26 => FirmwareError::KnownSevError(error.into()),
-            0x27 => FirmwareError::KnownSevError(error.into()),
+            0x01..0x027 => FirmwareError::KnownSevError(error.into()),
             _ => FirmwareError::UnknownSevError(error),
         }
     }
@@ -534,8 +497,7 @@ impl From<u32> for FirmwareError {
 impl From<FirmwareError> for c_int {
     fn from(err: FirmwareError) -> Self {
         match err {
-            FirmwareError::UnknownSevError(_) => -0x01,
-            FirmwareError::IoError(_) => -0x01,
+            FirmwareError::UnknownSevError(_) | FirmwareError::IoError(_) => -0x01,
             FirmwareError::KnownSevError(e) => e.into(),
         }
     }

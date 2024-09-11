@@ -1,0 +1,35 @@
+diff --git a/src/firmware/guest/mod.rs b/src/firmware/guest/mod.rs
+index 19dec14..8ae466c 100644
+--- a/src/firmware/guest/mod.rs
++++ b/src/firmware/guest/mod.rs
+@@ -173,9 +173,9 @@ impl Firmware {
+         }
+ 
+         // Make sure response status is successful
+-        // if report_response.status != 0 {
+-        //     Err(FirmwareError::from(report_response.status))?
+-        // }
++        if report_response.status != 0 {
++            Err(FirmwareError::from(report_response.status))?
++        }
+ 
+         if ext_report_request.certs_len == 0 {
+             return Ok((report_response.report, None));
+@@ -220,14 +220,12 @@ impl Firmware {
+             );
+ 
+             SNP_GET_DERIVED_KEY.ioctl(&mut self.0, &mut request).map_err(|_| map_fw_err(request.fw_err.into()))?;
+-
+-            // Check request error for errors
+         }
+ 
+         // Make sure response status is successfuls
+-        // if ffi_derived_key_response.status != 0 {
+-        //     Err(FirmwareError::from(ffi_derived_key_response.status))?
+-        // }
++        if ffi_derived_key_response.status != 0 {
++            Err(FirmwareError::from(ffi_derived_key_response.status))?
++        }
+ 
+         Ok(ffi_derived_key_response.key)
+     }
