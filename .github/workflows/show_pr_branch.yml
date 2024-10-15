@@ -2,7 +2,7 @@ name: Retrieve Branch Name
 on:
   pull_request:
     branches: main
-    types: [opened]
+    types: [opened, reopened]
 
 jobs:
   retrieve-branch:
