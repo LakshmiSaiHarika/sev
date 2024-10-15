@@ -1,7 +1,8 @@
 name: Retrieve Branch Name
 on:
   pull_request:
-    branches: main
+    branches: 
+          - '*'
     types: [opened, reopened]
 
 jobs:
