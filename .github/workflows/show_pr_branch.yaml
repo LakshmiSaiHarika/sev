@@ -1,0 +1,15 @@
+name: Retrieve Branch Name
+on:
+  pull_request:
+    types: reopened
+  workflow_dispatch:
+
+jobs:
+  retrieve-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Display Branch Name
+        run: echo "Current Branch:${{ github.ref }}"
