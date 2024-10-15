@@ -2,15 +2,21 @@ name: Retrieve Branch Name
 on:
   pull_request:
     branches: 
-          - '*'
-    types: [opened, reopened]
+          - main
 
 jobs:
   retrieve-branch:
     runs-on: self-hosted
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - name: Get branch nmes
+        id: branch-names
+        uses: tj-actions/branch-names@v8
+        
+      - name: Current branch names
+        run: |
+          echo "${{ steps.branch-names.outputs.current_branch }}"
+      # - name: Checkout Repository
+      #   uses: actions/checkout@v2
 
-      - name: Display Branch Name
-        run: echo "Current Branch:${{ github.head_ref }}"
+      # - name: Display Branch Name
+      #   run: echo "Current Branch:${{ github.head_ref }}"
