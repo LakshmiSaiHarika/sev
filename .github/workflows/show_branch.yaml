@@ -6,10 +6,11 @@ on:
 
 jobs:
   retrieve-branch:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
       - name: Display Branch Name
-        run: echo "Current Branch:${{ github.ref }}"
+        run: echo "Current Branch:${{ github.head_ref }}"
+
