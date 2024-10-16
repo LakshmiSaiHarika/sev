@@ -19,3 +19,6 @@ jobs:
 
       - name: Display Branch Name
         run: echo "Current Branch is ${{ github.head_ref }}"
+      
+      - name: Display PR Number
+        run: echo "Current Branch is ${{ github.event.pull_request.number }}"
