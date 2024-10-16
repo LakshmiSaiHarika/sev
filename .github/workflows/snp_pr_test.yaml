@@ -10,11 +10,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Sleep for 30 seconds
-        uses: jakejarvis/wait-action@master
-        with:
-         time: '30s'
-
       # Commented these, as these are already installed on self-hosted runner
       # - name: Install Dependencies
       #   run: |
@@ -48,27 +43,27 @@ jobs:
       #         fi
       #         echo "SEV-SNP is enabled on the host."
 
-      # - name: test-sev-on-host
-      #   run: |
-      #         echo "Testing SEV on the host..."
+      - name: test-sev-on-host
+        run: |
+              echo "Testing SEV on the host..."
 
-      #         # Give user access to /dev/sev to run cargo tests w/o permission issues
-      #         sudo usermod -a -G kvm virtee
-      #         sudo setfacl -m g:kvm:rw /dev/sev
+              # Give user access to /dev/sev to run cargo tests w/o permission issues
+              sudo usermod -a -G kvm virtee
+              sudo setfacl -m g:kvm:rw /dev/sev
 
-      #         git clone https://github.com/virtee/sev.git
-      #         cd sev
-      #         # git fetch origin pull/${{ github.event.inputs.pr_number }}/head:${{ github.event.inputs.pr_branch }}
-      #         # git switch ${{ github.event.inputs.pr_branch }}
-      #         source "${HOME}/.cargo/env" 2>/dev/null || true
+              git clone https://github.com/virtee/sev.git
+              cd sev
+              # git fetch origin pull/${{ github.event.inputs.pr_number }}/head:${{ github.event.inputs.pr_branch }}
+              # git switch ${{ github.event.inputs.pr_branch }}
+              source "${HOME}/.cargo/env" 2>/dev/null || true
 
-      #         if ! command -v rustc &> /dev/null; then
-      #           echo "Installing Rust..."
-      #           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
-      #           source "${HOME}/.cargo/env" 2>/dev/null
-      #         fi
+              if ! command -v rustc &> /dev/null; then
+                echo "Installing Rust..."
+                curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
+                source "${HOME}/.cargo/env" 2>/dev/null
+              fi
 
-      #         cargo test -- --skip snp
+              cargo test -- --skip snp
  
       - name: test-sev-on-guest
         run: |
