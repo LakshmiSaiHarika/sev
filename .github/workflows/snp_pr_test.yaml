@@ -1,6 +1,11 @@
 name: SNP PR Test
 
 on:
+  pull_request_target:
+    types: 
+      - reopened
+      - opened
+      - edited
   workflow_dispatch:
   
 jobs:
@@ -30,8 +35,8 @@ jobs:
               rm -rf ~/sev
               git clone https://github.com/virtee/sev.git
               cd sev
-              # git fetch origin pull/${{ github.event.inputs.pr_number }}/head:${{ github.event.inputs.pr_branch }}
-              # git switch ${{ github.event.inputs.pr_branch }}
+              git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
+              git switch ${{ github.head_ref }}
               source "${HOME}/.cargo/env" 2>/dev/null || true
 
               if ! command -v rustc &> /dev/null; then
@@ -86,7 +91,7 @@ jobs:
           rm -rf ~/sev
           git clone https://github.com/virtee/sev.git
           cd ~/sev
-          git fetch origin pull/${{ github.event.inputs.pr_number }}/head:${{ github.event.inputs.pr_branch }}
-          git switch ${{ github.event.inputs.pr_branch }}
+          git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
+          git switch ${{ github.head_ref }}
           cargo test
           EOF"
