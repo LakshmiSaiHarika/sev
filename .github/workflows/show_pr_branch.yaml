@@ -1,6 +1,6 @@
 name: Retrieve Branch Name
 on:
-  pull_request:
+  pull_request_target:
     types: 
       - reopened
       - opened
