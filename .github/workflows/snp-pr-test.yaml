@@ -69,7 +69,6 @@ jobs:
 
       - name: test-sev-on-host
         run: |
-            test-sev-on-host)
               echo "Testing SEV on the host..."
 
               # Give user access to /dev/sev to run cargo tests w/o permission issues
