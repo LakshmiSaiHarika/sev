@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   
 jobs:
-  snp_tests:
+  snp_host_tests:
     runs-on: self-hosted
     steps:
       - name: Checkout Repository
@@ -44,6 +44,12 @@ jobs:
               fi
 
               cargo test -- --skip snp
+          
+  snp_guest_tests:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
  
       - name: SEV library PR test on the guest
         run: |
