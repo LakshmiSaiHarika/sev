@@ -2,26 +2,26 @@ name: SNP PR Test
 
 on:
   workflow_dispatch:
-    # inputs:
-    #   command:
-    #     type: choice
-    #     description: 'Select the command to execute'
-    #     required: true
-    #     default: 'test-sev-on-host'
-    #     options:
-    #     - install-snp-on-the-host
-    #     - reboot-host
-    #     - verify-snp-on-host
-    #     - test-sev-on-host
-    #     - test-sev-on-guest
-    #   pr_number:
-    #     description: 'Test PR number'
-    #     required: true
-    #     default: '1'
-    #   pr_branch:
-    #     description: 'Test PR branch name'
-    #     required: true
-    #     default: 'main'
+    inputs:
+      command:
+        type: choice
+        description: 'Select the command to execute'
+        required: true
+        default: 'test-sev-on-host'
+        options:
+        - install-snp-on-the-host
+        - reboot-host
+        - verify-snp-on-host
+        - test-sev-on-host
+        - test-sev-on-guest
+      pr_number:
+        description: 'Test PR number'
+        required: true
+        default: '1'
+      pr_branch:
+        description: 'Test PR branch name'
+        required: true
+        default: 'main'
 jobs:
   snp_tests:
     runs-on: self-hosted
