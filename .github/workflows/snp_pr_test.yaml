@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-
-      # RECOMMENDATION: Run snp-host-setup.yaml GH Action for SNP latest kernel setup on the self-host runner
               
       - name: Verify if SNP is enabled on the host
         run: |
