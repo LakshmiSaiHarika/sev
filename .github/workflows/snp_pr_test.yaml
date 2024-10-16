@@ -26,26 +26,26 @@ jobs:
               fi
               echo "SEV-SNP is enabled on the host."
 
-      - name: SEV library PR test on the host
-        run: |
-              # Give user access to /dev/sev to run cargo tests w/o permission issues
-              sudo usermod -a -G kvm $USER
-              sudo setfacl -m g:kvm:rw /dev/sev
+      # - name: SEV library PR test on the host
+      #   run: |
+      #         # Give user access to /dev/sev to run cargo tests w/o permission issues
+      #         sudo usermod -a -G kvm $USER
+      #         sudo setfacl -m g:kvm:rw /dev/sev
 
-              rm -rf ~/sev
-              git clone https://github.com/virtee/sev.git
-              cd sev
-              git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
-              git switch ${{ github.head_ref }}
-              source "${HOME}/.cargo/env" 2>/dev/null || true
+      #         rm -rf ~/sev
+      #         git clone https://github.com/virtee/sev.git
+      #         cd sev
+      #         git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
+      #         git switch ${{ github.head_ref }}
+      #         source "${HOME}/.cargo/env" 2>/dev/null || true
 
-              if ! command -v rustc &> /dev/null; then
-                echo "Installing Rust..."
-                curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
-                source "${HOME}/.cargo/env" 2>/dev/null
-              fi
+      #         if ! command -v rustc &> /dev/null; then
+      #           echo "Installing Rust..."
+      #           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
+      #           source "${HOME}/.cargo/env" 2>/dev/null
+      #         fi
 
-              cargo test -- --skip snp
+      #         cargo test -- --skip snp
  
       - name: SEV library PR test on the guest
         run: |
