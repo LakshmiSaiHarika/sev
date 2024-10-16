@@ -1,0 +1,26 @@
+name: Setup SNP latest upstream Kernel and reboot the self-hosted runner
+on:
+  workflow_dispatch:
+  # Suggested Move: Run this workflow every night to update to SNP host kernel to latest
+  # schedule:
+  #  - cron: "0 0 * * *"
+
+jobs:
+  snp_tests:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Latest SNP Kernel on self-hosted runner
+        run: |
+            echo "Installing SNP on the host..."
+            mv ~/snp ~/previous_snp_version
+            rm -rf ~/snp.sh
+            wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
+            chmod +x snp.sh
+            ./snp.sh setup-host
+            echo "The host must be rebooted for changes to take effect."
+
+      - name: Reboot self-hosted runner
+        run: sudo reboot
