@@ -1,4 +1,4 @@
-name: Setup SNP latest upstream Kernel and reboot the self-hosted runner
+name: Setup SNP latest upstream Kernel on the self-hosted runner
 on:
   workflow_dispatch:
   # Suggested Move: Run this workflow every night to update to SNP host kernel to latest
