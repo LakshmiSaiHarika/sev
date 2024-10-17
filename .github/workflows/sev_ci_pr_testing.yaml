@@ -17,7 +17,6 @@ jobs:
               
       - name: Verify if SNP is enabled on the host
         run: |
-              echo "Verifying SNP on the host..."
               if ! sudo dmesg | grep -i "SEV-SNP enabled" 2>&1 >/dev/null; then
                 echo "SEV-SNP not enabled on the host."
                 exit 1
@@ -30,20 +29,23 @@ jobs:
               sudo usermod -a -G kvm $USER
               sudo setfacl -m g:kvm:rw /dev/sev
 
+              # Fetch and checkout SEV PR on the host
               rm -rf ~/sev
               git clone https://github.com/virtee/sev.git
               cd sev
               git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
               git switch ${{ github.head_ref }}
-              source "${HOME}/.cargo/env" 2>/dev/null || true
 
+              # Install Rust on the host
+              source "${HOME}/.cargo/env" 2>/dev/null || true
               if ! command -v rustc &> /dev/null; then
                 echo "Installing Rust..."
                 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
                 source "${HOME}/.cargo/env" 2>/dev/null
               fi
 
-              cargo test -- --skip snp
+              # Cargo SEV PR test on the host
+              cargo test 
           
   snp_guest_tests:
     runs-on: self-hosted
@@ -53,37 +55,13 @@ jobs:
  
       - name: SEV library PR test on the guest
         run: |
-          echo "Testing SEV on the guest..."
+          # Launch and verify SNP enabled Guest
           rm -rf ~/snp.sh
           wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
           chmod +x snp.sh
           ./snp.sh launch-guest
-  
-          # SSH guest commands
-          GUEST_SSH_KEY_PATH="${HOME}/snp/launch/snp-guest-key"
-          if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
-            echo "SSH key not present, cannot verify guest SNP enabled."
-            exit 1
-          fi
-  
-          ssh_guest_command() {
-            command="$1"
-            ssh -p 10022 -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
-          }
-  
-          verify_snp_guest() {
-            local snp_enabled=$(ssh_guest_command "sudo dmesg | grep 'Memory Encryption Features active:.*SEV-SNP'")
-            if [[ -n "${snp_enabled}" ]]; then
-              echo "SNP is Enabled"
-            else
-              echo "SNP is NOT Enabled"
-              exit 1
-            fi
-          }
-  
-          verify_snp_guest
-  
-          # Install sev dependencies as a root user
+          
+          # Install sev dependencies as a root user 
            ssh_guest_command "sudo su - <<EOF
            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
            source "${HOME}/.cargo/env" 2>/dev/null
