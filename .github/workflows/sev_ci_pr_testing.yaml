@@ -63,7 +63,33 @@ jobs:
           wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
           chmod +x snp.sh
           ./snp.sh launch-guest
+
+          # SNP check via Guest MSR 
+          ssh_guest_command "sudo dnf install -y msr-tools > /dev/null 2>&1" > /dev/null 2>&1
+          ssh_guest_command "sudo modprobe msr" > /dev/null 2>&1
+          local guest_msr_read
+          guest_msr_read=$(ssh_guest_command "sudo rdmsr -p 0 0xc0010131")
+          guest_msr_read=$(echo "${guest_msr_read}" | tr -d '\r' | bc)
+
+          declare -A actual_sev_snp_bit_status=(
+            [SEV]=$(( ( guest_msr_read >> 0) & 1))
+            [SEV-ES]=$(( (guest_msr_read >> 1) & 1))
+            [SNP]=$(( (guest_msr_read >> 3) & 1))
+          )
           
+            local sev_snp_error=""
+            for sev_snp_key in "${!actual_sev_snp_bit_status[@]}";
+            do
+                if [[ ${actual_sev_snp_bit_status[$sev_snp_key]} != 1 ]]; then
+                  # Capture the guest SEV/SNP bit value mismatch
+                    sev_snp_error+=$(echo "$sev_snp_key feature is not active on the guest.\n");
+            done
+            
+            if [[ ! -z "${sev_snp_error}" ]]; then
+              >&2 echo -e "ERROR: ${sev_snp_error}"
+              return 1
+            fi
+         
           # Install sev dependencies as a root user 
            ssh_guest_command "sudo su - <<EOF
            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
@@ -71,7 +97,7 @@ jobs:
            sudo dnf install -y git gcc
           EOF"
   
-          # Clean up previous sev, clone and perform PR test on sev library as root user to fix OS permission denied issues
+          # Clean up and perform PR test on sev library as root user to fix OS permission denied issues
           ssh_guest_command "sudo su - <<EOF
           rm -rf ~/sev
           git clone https://github.com/virtee/sev.git
