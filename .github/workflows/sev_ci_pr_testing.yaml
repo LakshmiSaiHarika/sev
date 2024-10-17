@@ -78,25 +78,25 @@ jobs:
             }
 
           verify_snp_guest_msr(){
-          # Install guest rdmsr package dependencies to insert guest msr module 
-          ssh_guest_command "sudo dnf install -y msr-tools > /dev/null 2>&1" > /dev/null 2>&1
-          ssh_guest_command "sudo modprobe msr" > /dev/null 2>&1
-          local guest_msr_read=$(ssh_guest_command "sudo rdmsr -p 0 0xc0010131")
-          guest_msr_read=$(echo "${guest_msr_read}" | tr -d '\r' | bc)
-
-          # Map all the sev features in a single associative array for all guest SEV features
-          declare -A actual_sev_snp_bit_status=(
-            [SEV]=$(( ( guest_msr_read >> 0) & 1))
-            [SEV-ES]=$(( (guest_msr_read >> 1) & 1))
-            [SNP]=$(( (guest_msr_read >> 3) & 1))
-          )
+            # Install guest rdmsr package dependencies to insert guest msr module 
+            ssh_guest_command "sudo dnf install -y msr-tools > /dev/null 2>&1" > /dev/null 2>&1
+            ssh_guest_command "sudo modprobe msr" > /dev/null 2>&1
+            local guest_msr_read=$(ssh_guest_command "sudo rdmsr -p 0 0xc0010131")
+            guest_msr_read=$(echo "${guest_msr_read}" | tr -d '\r' | bc)
+  
+            # Map all the sev features in a single associative array for all guest SEV features
+            declare -A actual_sev_snp_bit_status=(
+              [SEV]=$(( ( guest_msr_read >> 0) & 1))
+              [SEV-ES]=$(( (guest_msr_read >> 1) & 1))
+              [SNP]=$(( (guest_msr_read >> 3) & 1))
+            )
           
             local sev_snp_error=""
             for sev_snp_key in "${!actual_sev_snp_bit_status[@]}";
             do
                 if [[ ${actual_sev_snp_bit_status[$sev_snp_key]} != 1 ]]; then
                   # Capture the guest SEV/SNP bit value mismatch
-                    sev_snp_error+=$(echo "$sev_snp_key feature is not active on the guest.\n");
+                  sev_snp_error+=$(echo "$sev_snp_key feature is not active on the guest.\n");
             done
             
             if [[ ! -z "${sev_snp_error}" ]]; then
