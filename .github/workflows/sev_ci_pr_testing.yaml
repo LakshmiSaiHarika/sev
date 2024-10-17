@@ -67,6 +67,13 @@ jobs:
 
       - name: Verify SNP on the guest via MSR
         run: |
+          # SSH guest commands
+          GUEST_SSH_KEY_PATH="${HOME}/snp/launch/snp-guest-key"
+          if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
+            echo "SSH key not present, cannot verify guest SNP enabled."
+            exit 1
+          fi
+
           ssh_guest_command() {
               command="$1"
               ssh -p 10022 -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
@@ -99,7 +106,14 @@ jobs:
             fi
           
       - name: SEV CI PR test on the guest
-        run: |    
+        run: |   
+          # SSH guest commands
+          GUEST_SSH_KEY_PATH="${HOME}/snp/launch/snp-guest-key"
+          if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
+            echo "SSH key not present, cannot verify guest SNP enabled."
+            exit 1
+          fi
+          
           ssh_guest_command() {
               command="$1"
               ssh -p 10022 -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
