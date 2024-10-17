@@ -67,6 +67,11 @@ jobs:
 
       - name: Verify SNP on the guest via MSR
         run: |
+          ssh_guest_command() {
+              command="$1"
+              ssh -p 10022 -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
+            }
+            
           # Install guest rdmsr package dependencies to insert guest msr module 
           ssh_guest_command "sudo dnf install -y msr-tools > /dev/null 2>&1" > /dev/null 2>&1
           ssh_guest_command "sudo modprobe msr" > /dev/null 2>&1
@@ -94,7 +99,11 @@ jobs:
             fi
           
       - name: SEV CI PR test on the guest
-        run: |         
+        run: |    
+          ssh_guest_command() {
+              command="$1"
+              ssh -p 10022 -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
+          }
           # Install sev dependencies as a root user 
            ssh_guest_command "sudo su - <<EOF
            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
