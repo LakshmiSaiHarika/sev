@@ -107,6 +107,8 @@ jobs:
           
       - name: SEV CI PR test on the guest
         run: |   
+          #!/bin/bash
+          
           # SSH guest commands
           GUEST_SSH_KEY_PATH="${HOME}/snp/launch/snp-guest-key"
           if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
