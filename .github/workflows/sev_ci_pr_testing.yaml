@@ -1,4 +1,4 @@
-name: SNP PR Test
+name: SEV CI PR test
 
 on:
   pull_request_target:
