@@ -67,18 +67,17 @@ jobs:
 
       - name: Verify SNP on the guest via MSR
         run: |
-          # SSH guest commands
-          GUEST_SSH_KEY_PATH="${HOME}/snp/launch/snp-guest-key"
-          if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
-            echo "SSH key not present, cannot verify guest SNP enabled."
-            exit 1
-          fi
-
           ssh_guest_command() {
+              GUEST_SSH_KEY_PATH="${HOME}/snp/launch/snp-guest-key"
+              if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
+                echo "SSH key not present, cannot verify guest SNP enabled."
+                exit 1
+              fi  
               command="$1"
               ssh -p 10022 -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
             }
-            
+
+          verify_snp_guest_msr(){
           # Install guest rdmsr package dependencies to insert guest msr module 
           ssh_guest_command "sudo dnf install -y msr-tools > /dev/null 2>&1" > /dev/null 2>&1
           ssh_guest_command "sudo modprobe msr" > /dev/null 2>&1
@@ -104,22 +103,23 @@ jobs:
               >&2 echo -e "ERROR: ${sev_snp_error}"
               return 1
             fi
+           }
+           
+          verify_snp_guest_msr
           
       - name: SEV CI PR test on the guest
-        run: |   
-          #!/bin/bash
-          
-          # SSH guest commands
-          GUEST_SSH_KEY_PATH="${HOME}/snp/launch/snp-guest-key"
-          if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
-            echo "SSH key not present, cannot verify guest SNP enabled."
-            exit 1
-          fi
-          
+        run: |        
           ssh_guest_command() {
+              # SSH guest commands
+              GUEST_SSH_KEY_PATH="${HOME}/snp/launch/snp-guest-key"
+              if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
+                echo "SSH key not present, cannot verify guest SNP enabled."
+                exit 1
+              fi
               command="$1"
               ssh -p 10022 -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
           }
+          
           # Install sev dependencies as a root user 
            ssh_guest_command "sudo su - <<EOF
            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
