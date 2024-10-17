@@ -97,6 +97,7 @@ jobs:
                 if [[ ${actual_sev_snp_bit_status[$sev_snp_key]} != 1 ]]; then
                   # Capture the guest SEV/SNP bit value mismatch
                   sev_snp_error+=$(echo "$sev_snp_key feature is not active on the guest.\n");
+                fi
             done
             
             if [[ ! -z "${sev_snp_error}" ]]; then
