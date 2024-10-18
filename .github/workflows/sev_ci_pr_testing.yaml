@@ -28,6 +28,7 @@ jobs:
 
       - name: SEV CI PR test on the host
         run: |
+              echo "Event name = ${{ github.event_name }}"
               # Give user access to /dev/sev to run cargo tests w/o permission issues
               sudo usermod -a -G kvm $USER
               sudo setfacl -m g:kvm:rw /dev/sev
@@ -36,7 +37,7 @@ jobs:
               rm -rf ~/sev
               git clone https://github.com/virtee/sev.git
               cd sev
-
+            
               # Checkout PR branch
               if [ ${{ github.event_name }} == "pull_request_type" ]; then
                 git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
