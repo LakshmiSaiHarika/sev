@@ -36,9 +36,13 @@ jobs:
               rm -rf ~/sev
               git clone https://github.com/virtee/sev.git
               cd sev
-              git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
-              git switch ${{ github.head_ref }}
 
+              # Checkout PR branch
+              if [ ${{ github.event_name }} == "pull_request" ]; then
+                git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
+                git switch ${{ github.head_ref }}
+              fi
+              
               # Install Rust on the host
               source "${HOME}/.cargo/env" 2>/dev/null || true
               if ! command -v rustc &> /dev/null; then
