@@ -38,7 +38,7 @@ jobs:
               cd sev
 
               # Checkout PR branch
-              if [ ${{ github.event_name }} == "pull_request" ]; then
+              if [ ${{ github.event_name }} == "pull_request_type" ]; then
                 git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
                 git switch ${{ github.head_ref }}
               fi
@@ -139,7 +139,7 @@ jobs:
           cd ~/sev
 
           # Checkout PR branch
-          if [ ${{ github.event_name }} == "pull_request" ]; then
+          if [ ${{ github.event_name }} == "pull_request_type" ]; then
             git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
             git switch ${{ github.head_ref }}
           fi
