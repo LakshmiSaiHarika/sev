@@ -45,7 +45,7 @@ jobs:
 
               # Checkout PR branch
               if [ ${{ github.event_name }} == "pull_request_target" ]; then
-                git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
+                git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }} --force
                 git switch ${{ github.head_ref }}
               fi
 
