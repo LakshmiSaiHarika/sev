@@ -32,6 +32,8 @@ jobs:
       - name: SEV CI PR test on the host
         run: |
               echo "Event name = ${{ github.event_name }}"
+              echo "PR Number = ${{ github.event.pull_request.number }}"
+              echo "Branch = ${{ github.head_ref }}"
               # Give user access to /dev/sev to run cargo tests w/o permission issues
               sudo usermod -a -G kvm $USER
               sudo setfacl -m g:kvm:rw /dev/sev
