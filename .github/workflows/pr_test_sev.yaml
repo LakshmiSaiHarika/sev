@@ -2,7 +2,7 @@
 name: SEV CI PR test
   push:
     branches:
-      - ${{ github.head_ref }}"
+      - "${{ github.head_ref }}"
   pull_request_target:
     types:
       - reopened
