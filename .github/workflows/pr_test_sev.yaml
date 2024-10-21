@@ -1,14 +1,14 @@
-on: [push, pull_request]
+# on: [push, pull_request]
 name: SEV CI PR test
-  # push:
-  #   branches:
-  #     - 'main'
-  # pull_request_target:
-  #   types:
-  #     - reopened
-  #     - opened
-  #     - edited
-  # workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+  pull_request_target:
+    types:
+      - reopened
+      - opened
+      - edited
+  workflow_dispatch:
 
 jobs:
   snp_host_tests:
