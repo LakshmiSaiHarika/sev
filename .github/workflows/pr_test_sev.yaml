@@ -1,5 +1,6 @@
 # on: [push, pull_request]
-  name: SEV CI PR test
+name: SEV CI PR test
+on:
   push:
     branches:
       - "${{ github.head_ref }}"
