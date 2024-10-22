@@ -37,7 +37,7 @@ jobs:
               rm -rf ~/sev
               git clone https://github.com/virtee/sev.git
               cd sev
-              https://github.com/LakshmiSaiHarika/sev.git
+              
               # Checkout PR branch
               if [ ${{ github.event_name }} == "pull_request_target" ]; then
                 git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
