@@ -37,6 +37,7 @@ jobs:
               rm -rf ~/sev
               git clone https://github.com/virtee/sev.git
               cd sev
+              git show-branch -r
 
               # Checkout PR branch
               if [ ${{ github.event_name }} == "pull_request_target" ]; then
