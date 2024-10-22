@@ -37,8 +37,7 @@ jobs:
               rm -rf ~/sev
               git clone https://github.com/virtee/sev.git
               cd sev
-              git show-branch -r
-
+              https://github.com/LakshmiSaiHarika/sev.git
               # Checkout PR branch
               if [ ${{ github.event_name }} == "pull_request_target" ]; then
                 git fetch origin pull/${{ github.event.pull_request.number }}/head:${{ github.head_ref }}
@@ -137,7 +136,7 @@ jobs:
           # Clean up and perform PR test on sev library as root user to fix OS permission denied issues
           ssh_guest_command "sudo su - <<EOF
           rm -rf ~/sev
-          git clone https://github.com/virtee/sev.git
+          git clone https://github.com/LakshmiSaiHarika/sev.git
           cd ~/sev
 
           # Checkout PR branch
