@@ -6,6 +6,7 @@ on:
       - reopened
       - opened
       - edited
+      - synchronize
   workflow_dispatch:
 
 jobs:
