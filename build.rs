@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-
+//comment
 fn main() {
     use std::path::Path;
 
