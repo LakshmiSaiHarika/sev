@@ -1,4 +1,4 @@
-name: Setup SNP latest upstream Kernel on the self-hosted runner
+name: Manual host setup with the SNP latest upstream Kernel
 on:
   workflow_dispatch:
     inputs:
@@ -33,5 +33,5 @@ jobs:
             
             echo "The host must be rebooted for changes to take effect."
 
-      # - name: Reboot self-hosted runner
-      #   run: sudo reboot
+      - name: Reboot self-hosted runner
+        run: sudo reboot
