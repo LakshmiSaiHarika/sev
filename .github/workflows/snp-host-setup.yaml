@@ -4,10 +4,6 @@ on:
     inputs:
       snp-kernel-host-guest-tag:
         description: 'Specify SNP kernel tag version(e.g: v6.10)'
-  # Suggested Move: Run this workflow every night to update to SNP host kernel to latest
-  # schedule:
-  #  - cron: "0 0 * * *"
-
 jobs:
   snp_setup:
     runs-on: self-hosted
