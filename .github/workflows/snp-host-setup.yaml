@@ -1,6 +1,9 @@
 name: Setup SNP latest upstream Kernel on the self-hosted runner
 on:
   workflow_dispatch:
+    inputs:
+      snp-kernel-host-guest-tag:
+        description: 'Specify SNP kernel tag version'
   # Suggested Move: Run this workflow every night to update to SNP host kernel to latest
   # schedule:
   #  - cron: "0 0 * * *"
@@ -15,11 +18,18 @@ jobs:
       - name: Install Latest SNP Kernel on self-hosted runner
         run: |
             echo "Installing SNP on the host..."
-            mv ~/snp ~/previous_snp_version_1
+            mv ~/snp ~/previous_snp_version_2
             rm -rf ~/snp.sh
             wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
             chmod +x snp.sh
-            ./snp.sh --kernel-tag "v6.10" setup-host
+
+            local kernel_host_guest_branch_tag= "${{ github.event.inputs.snp-kernel-host-guest-tag }}"
+            if [[ ! -z "${kernel_host_guest_branch_tag}" ]]; then
+              ./snp.sh --kernel-tag "${kernel_host_guest_branch_tag}" setup-host
+            else
+              ./snp.sh setup-host
+            fi
+            
             echo "The host must be rebooted for changes to take effect."
 
       # - name: Reboot self-hosted runner
