@@ -14,7 +14,7 @@ jobs:
       - name: Install Latest SNP Kernel on self-hosted runner
         run: |
             echo "Installing SNP on the host..."
-            mv ~/snp ~/previous_snp_version_2
+            [ ! -d "~/snp" ] || mv ~/snp ~/previous_snp_version_2
             rm -rf ~/snp.sh
             wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
             chmod +x snp.sh
