@@ -19,7 +19,7 @@ jobs:
             wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
             chmod +x snp.sh
 
-            kernel_host_guest_branch_tag= "${{ github.event.inputs.snp-kernel-host-guest-tag }}"
+            kernel_host_guest_branch_tag="${{ github.event.inputs.snp-kernel-host-guest-tag }}"
             if [[ ! -z "${kernel_host_guest_branch_tag}" ]]; then
               ./snp.sh --kernel-tag "${kernel_host_guest_branch_tag}" setup-host
             else
