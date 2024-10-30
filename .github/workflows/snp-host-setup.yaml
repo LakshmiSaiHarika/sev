@@ -28,5 +28,5 @@ jobs:
             
             echo "The host must be rebooted for changes to take effect."
 
-      - name: Reboot self-hosted runner
-        run: sudo reboot
+      # - name: Reboot self-hosted runner
+      #   run: sudo reboot
