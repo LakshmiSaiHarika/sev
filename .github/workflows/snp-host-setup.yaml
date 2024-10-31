@@ -27,11 +27,10 @@ jobs:
               ./snp.sh setup-host
             fi
             
-            echo "The host must be rebooted for changes to take effect."
 
-      - name: Sleep for 10 minutes
-        run: sleep 600s
+      - name: Sleep for 10 minutes and reboot
+        run: sleep 600s | sudo reboot
         shell: bash
 
-      - name: Reboot self-hosted runner
-        run: sudo reboot
+      # - name: Reboot self-hosted runner
+      #   run: sudo reboot
