@@ -24,15 +24,15 @@ jobs:
             wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
             chmod +x snp.sh
             
-            # Sets up the user given latest upstream SNP host kernel/master branch 
-            kernel_host_guest_branch_tag="${{ github.event.inputs.snp-kernel-host-guest-tag }}"
-            if [[ ! -z "${kernel_host_guest_branch_tag}" ]]; then
-              ./snp.sh --kernel-tag "${kernel_host_guest_branch_tag}" setup-host
-            else
-              # Uses kernel upstream default master branch for kernel installation  
-              ./snp.sh setup-host
-            fi     
+            # # Sets up the user given latest upstream SNP host kernel/master branch 
+            # kernel_host_guest_branch_tag="${{ github.event.inputs.snp-kernel-host-guest-tag }}"
+            # if [[ ! -z "${kernel_host_guest_branch_tag}" ]]; then
+            #   ./snp.sh --kernel-tag "${kernel_host_guest_branch_tag}" setup-host
+            # else
+            #   # Uses kernel upstream default master branch for kernel installation  
+            #   ./snp.sh setup-host
+            # fi     
 
-      - name: Sleep for 10 minutes and then reboot
-        run: sleep 600s | sudo reboot
+      - name: Reboot
+        run: sudo reboot
         shell: bash
