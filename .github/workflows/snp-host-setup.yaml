@@ -15,6 +15,7 @@ jobs:
         run: |
             echo "Installing SNP on the host..."
             rm -rf ~/snp.sh
+            mv ~/snp ~/previous_snp
             wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
             chmod +x snp.sh
 
