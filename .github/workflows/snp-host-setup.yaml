@@ -28,7 +28,7 @@ jobs:
             fi
             
 
-      - name: Sleep for 10 minutes and reboot
+      - name: Sleep for 10 minutes and then reboot
         run: sleep 600s | sudo reboot
         shell: bash
 
