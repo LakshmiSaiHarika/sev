@@ -16,9 +16,9 @@ jobs:
             echo "Installing SNP on the host..."
             
             # Cleanup 
-            [ ! -f "~/snp.sh"] || rm -rf ~/snp.sh
-            [ ! -d "~/previous_snp"] || rm -rf ~/previous_snp
-            [ ! -d "~/snp"] || mv ~/snp ~/previous_snp
+            [ ! -f "~/snp.sh" ] || rm -rf ~/snp.sh
+            [ ! -d "~/previous_snp" ] || rm -rf ~/previous_snp
+            [ ! -d "~/snp" ] || mv ~/snp ~/previous_snp
 
             # Downloads sev utility script to setup host SNP kernel
             wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
