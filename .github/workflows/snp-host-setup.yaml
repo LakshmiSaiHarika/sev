@@ -71,4 +71,4 @@ jobs:
       - name: Trigger snpguest CI PR test on the self-hosted runner
         run: | 
             # Downloads sev utility script to setup host SNP kernel
-            python /home/virtee/automation_scripts/trigger_pr_tests.py
+            python ~/automation_scripts/trigger_pr_tests.py
