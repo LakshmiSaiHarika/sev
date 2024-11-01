@@ -35,10 +35,12 @@ jobs:
             # fi     
 
       - name: Reboot
+        timeout-minutes: 8
         run: sudo reboot
         shell: bash
 
-      - name: Sleep for 5 minutes
+      - name: Sleep for 8 minutes
+        timeout-minutes: 8
         run: sleep 300s
         shell: bash
 
