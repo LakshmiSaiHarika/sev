@@ -37,6 +37,10 @@ jobs:
         run: sudo reboot
         shell: bash
 
+      - name: Sleep for 5 minutes
+        run: sleep 300s
+        shell: bash
+
       - name: Trigger snpguest CI PR test on the self-hosted runner
         run: | 
             # Downloads sev utility script to setup host SNP kernel
