@@ -55,6 +55,11 @@ jobs:
         run: sleep 300s
         shell: bash
 
+      - name: Next job
+        timeout-minutes: 5
+        run: echo "Re-Trigger Virtee CI PR tests for all the open PRs on the self-hosted runner"
+        shell: bash
+        
   trigger_pr_tests:
     runs-on: self-hosted
     needs:  wait_time_after_reboot
