@@ -36,15 +36,16 @@ jobs:
             
   reboot_self_hosted_runner:
     runs-on: self-hosted
+    needs: snp_setup
     steps:
       - name: Reboot
         timeout-minutes: 8
         run: sudo reboot
         shell: bash
         
-  add_timer_between_jobs:
+  wait_time_after_reboot:
     runs-on: ubuntu-latest
-    timeout-minutes: 30 
+    needs:  reboot_self_hosted_runner
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -56,6 +57,7 @@ jobs:
 
   trigger_pr_tests:
     runs-on: self-hosted
+    needs:  wait_time_after_reboot
     timeout-minutes: 30 
     steps:
       - name: Checkout Repository
