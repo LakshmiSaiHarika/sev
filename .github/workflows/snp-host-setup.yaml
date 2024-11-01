@@ -38,19 +38,6 @@ jobs:
         timeout-minutes: 8
         run: sudo reboot
         shell: bash
-        continue-on-error: true
-
-      - name: Sleep for 8 minutes
-        timeout-minutes: 8
-        run: sleep 300s
-        shell: bash
-        continue-on-error: true
-
-      - name: Trigger snpguest CI PR test on the self-hosted runner
-        run: | 
-            # Downloads sev utility script to setup host SNP kernel
-            python /home/virtee/automation_scripts/trigger_pr_tests.py
-        continue-on-error: true
 
   add_timer_between_jobs:
     runs-on: ubuntu-latest
