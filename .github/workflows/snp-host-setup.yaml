@@ -48,3 +48,28 @@ jobs:
         run: | 
             # Downloads sev utility script to setup host SNP kernel
             python /home/virtee/automation_scripts/trigger_pr_tests.py
+
+  add_timer_between_jobs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30 
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+  
+      - name: Sleep for 8 minutes
+        timeout-minutes: 8
+        run: sleep 480s
+        shell: bash
+
+  trigger_pr_tests:
+    runs-on: self-hosted
+    timeout-minutes: 30 
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Trigger snpguest CI PR test on the self-hosted runner
+        run: | 
+            # Downloads sev utility script to setup host SNP kernel
+            python /home/virtee/automation_scripts/trigger_pr_tests.py  
+
