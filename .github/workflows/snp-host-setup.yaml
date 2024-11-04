@@ -7,7 +7,7 @@ on:
 jobs:
   snp_setup:
     runs-on: self-hosted
-    timeout-minutes: 30 
+    timeout-minutes: 60 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
