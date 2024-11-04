@@ -74,6 +74,7 @@ jobs:
           chmod +x snp.sh
 
           # rm -rf ~/snp/launch
+          ./snp.sh stop-guests
           ./snp.sh launch-guest
 
       - name: Verify SNP on the guest via MSR
