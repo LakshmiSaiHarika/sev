@@ -5,56 +5,56 @@ on:
       snp-kernel-host-guest-tag:
         description: 'Specify SNP kernel tag version(e.g: v6.10)'
 jobs:
-  snp_setup:
-    runs-on: self-hosted
-    timeout-minutes: 60 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+  # snp_setup:
+  #   runs-on: self-hosted
+  #   timeout-minutes: 60 
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
 
-      - name: Install Latest SNP Kernel on the self-hosted runner
-        run: |
-            echo "Installing SNP on the host..."
+  #     - name: Install Latest SNP Kernel on the self-hosted runner
+  #       run: |
+  #           echo "Installing SNP on the host..."
             
-            # Cleanup 
-            [ ! -f "~/snp.sh" ] || rm -rf ~/snp.sh
-            [ ! -d "~/previous_snp" ] || rm -rf ~/previous_snp
-            [ ! -d "~/snp" ] || mv ~/snp ~/previous_snp
+  #           # Cleanup 
+  #           [ ! -f "~/snp.sh" ] || rm -rf ~/snp.sh
+  #           [ ! -d "~/previous_snp" ] || rm -rf ~/previous_snp
+  #           [ ! -d "~/snp" ] || mv ~/snp ~/previous_snp
 
-            # Downloads sev utility script to setup host SNP kernel
-            wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
-            chmod +x snp.sh
+  #           # Downloads sev utility script to setup host SNP kernel
+  #           wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
+  #           chmod +x snp.sh
             
-            # Sets up the user given latest upstream SNP host kernel/master branch 
-            kernel_host_guest_branch_tag="${{ github.event.inputs.snp-kernel-host-guest-tag }}"
-            if [[ ! -z "${kernel_host_guest_branch_tag}" ]]; then
-              ./snp.sh --kernel-tag "${kernel_host_guest_branch_tag}" setup-host
-            else
-              # Uses kernel upstream default master branch for kernel installation  
-              ./snp.sh setup-host
-            fi     
+  #           # Sets up the user given latest upstream SNP host kernel/master branch 
+  #           kernel_host_guest_branch_tag="${{ github.event.inputs.snp-kernel-host-guest-tag }}"
+  #           if [[ ! -z "${kernel_host_guest_branch_tag}" ]]; then
+  #             ./snp.sh --kernel-tag "${kernel_host_guest_branch_tag}" setup-host
+  #           else
+  #             # Uses kernel upstream default master branch for kernel installation  
+  #             ./snp.sh setup-host
+  #           fi     
             
-  reboot_self_hosted_runner:
-    runs-on: self-hosted
-    needs: snp_setup
-    steps:
-      - name: Reboot
-        timeout-minutes: 8
-        run: sudo reboot
-        shell: bash
+  # reboot_self_hosted_runner:
+  #   runs-on: self-hosted
+  #   needs: snp_setup
+  #   steps:
+  #     - name: Reboot
+  #       timeout-minutes: 8
+  #       run: sudo reboot
+  #       shell: bash
         
-  wait_time_after_reboot:
-    runs-on: ubuntu-latest
-    needs:  reboot_self_hosted_runner
-    timeout-minutes: 30
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+  # wait_time_after_reboot:
+  #   runs-on: ubuntu-latest
+  #   needs:  reboot_self_hosted_runner
+  #   timeout-minutes: 30
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
   
-      - name: Sleep for 5 minutes
-        timeout-minutes: 15
-        run: sleep 300s
-        shell: bash
+  #     - name: Sleep for 5 minutes
+  #       timeout-minutes: 15
+  #       run: sleep 300s
+  #       shell: bash
         
   trigger_pr_tests:
     runs-on: self-hosted
