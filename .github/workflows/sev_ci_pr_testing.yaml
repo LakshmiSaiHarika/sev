@@ -70,7 +70,7 @@ jobs:
       - name: Launch SNP enabled guest
         run: |
           check_and_launch_guest() {           
-            local qemu_processes=$(ps aux | grep -i snp-guest.img | grep -i LABEL=fedora)
+            local qemu_processes=$(ps aux | grep -i /home/virtee/snp/launch/snp-guest.img | grep -i snp-guest.img | grep -i LABEL=fedora)
             # [[ -n "${qemu_processes}" ]] || { echo -e "No qemu processes currently running" ;./snp.sh launch-guest; }
 
             # Wait for some time if qemu processes exists
@@ -79,7 +79,7 @@ jobs:
               while [[  -n "${guest_state}" ]]
               do
                 sleep $(( $sleep_timer + 1 ))
-                qemu_processes=$(ps aux | grep -i snp-guest.img | grep -i LABEL=fedora)
+                qemu_processes=$(ps aux | grep -i /home/virtee/snp/launch/snp-guest.img | grep -i snp-guest.img | grep -i LABEL=fedora)
               done              
             fi
 
