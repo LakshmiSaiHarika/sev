@@ -70,7 +70,7 @@ jobs:
       - name: Launch SNP enabled guest
         run: |
           check_and_launch_guest() {           
-            local qemu_processes=$(ps aux | grep -i snp-guest.img)
+            local qemu_processes=$(ps aux | grep -i snp-guest.img | grep -i LABEL=fedora)
             [[ -n "${qemu_processes}" ]] || { echo -e "No qemu processes currently running" ;./snp.sh launch-guest; }
           }
           
