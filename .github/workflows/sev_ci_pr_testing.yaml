@@ -76,7 +76,7 @@ jobs:
             local IMAGE="${LAUNCH_WORKING_DIR}/${GUEST_NAME}.img"   
             
             local qemu_processes=$(ps aux | grep "${WORKING_DIR}.*qemu.*${IMAGE}" | grep -v "tail.*qemu.log" | grep -v "grep.*qemu")
-            [[ -n "${qemu_processes}" ]] || { echo -e "No qemu processes currently running"; ./snp.sh launch-guest; }
+            [[ -n "${qemu_processes}" ]] || { echo -e "No qemu processes currently running";./snp.sh stop-guests ;./snp.sh launch-guest; }
           }
           
           rm -rf ~/snp.sh
