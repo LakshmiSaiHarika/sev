@@ -69,14 +69,26 @@ jobs:
 
       - name: Launch SNP enabled guest
         run: |
+          launch_guest() {
+            local WORKING_DIR ="${WORKING_DIR:-$HOME/snp}"
+            local LAUNCH_WORKING_DIR="${LAUNCH_WORKING_DIR:-${WORKING_DIR}/launch}"
+            local GUEST_NAME="${GUEST_NAME:-snp-guest}"
+            local IMAGE="${IMAGE:-${LAUNCH_WORKING_DIR}/${GUEST_NAME}.img}"          
+            local qemu_processes=$(ps aux | grep "${WORKING_DIR}.*qemu.*${IMAGE}" | grep -v "tail.*qemu.log" | grep -v "grep.*qemu")
+            [[ -n "${qemu_processes}" ]] || { echo -e "No qemu processes currently running"; ./snp.sh launch-guest; }
+          }
+          
           rm -rf ~/snp.sh
           wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
           chmod +x snp.sh
 
-          # rm -rf ~/snp/launch
-          ./snp.sh stop-guests
-          ./snp.sh launch-guest
+          WORKING_DIR ="${WORKING_DIR:-$HOME/snp}"
+          LAUNCH_WORKING_DIR="${LAUNCH_WORKING_DIR:-${WORKING_DIR}/launch}"
 
+          if [ -d "${LAUNCH_WORKING_DIR}" ]; then            
+            launch_guest
+          fi
+    
       - name: Verify SNP on the guest via MSR
         run: |
           ssh_guest_command() {
