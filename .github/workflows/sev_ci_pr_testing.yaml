@@ -67,28 +67,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # - name: Launch SNP enabled guest
-      #   run: |
-      #     check_and_launch_guest() {
-      #       local WORKING_DIR="${HOME}/snp"
-      #       local LAUNCH_WORKING_DIR="${WORKING_DIR}/launch"
-      #       local GUEST_NAME="snp-guest"
-      #       local IMAGE="${LAUNCH_WORKING_DIR}/${GUEST_NAME}.img"   
-            
-      #       local qemu_processes=$(ps aux | grep "${WORKING_DIR}.*qemu.*${IMAGE}" | grep -v "tail.*qemu.log" | grep -v "grep.*qemu")
-      #       [[ -n "${qemu_processes}" ]] || { echo -e "No qemu processes currently running";./snp.sh stop-guests ;./snp.sh launch-guest; }
-      #     }
+      - name: Launch SNP enabled guest
+        run: |
+          check_and_launch_guest() {           
+            local qemu_processes=$(ps aux | grep -i snp-guest.img)
+            [[ -n "${qemu_processes}" ]] || { echo -e "No qemu processes currently running" ;./snp.sh launch-guest; }
+          }
           
-      #     rm -rf ~/snp.sh
-      #     wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
-      #     chmod +x snp.sh
+          rm -rf ~/snp.sh
+          wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
+          chmod +x snp.sh
 
-      #     if [ -d "${HOME}/snp/launch" ]; then  
-      #       echo "Launch directory exists"
-      #       check_and_launch_guest
-      #     else
-      #       ./snp.sh launch-guest
-      #     fi
+          if [ -d "${HOME}/snp/launch" ]; then  
+            echo "Launch directory exists"
+            check_and_launch_guest
+          else
+            ./snp.sh launch-guest
+          fi
     
       - name: Verify SNP on the guest via MSR
         run: |
