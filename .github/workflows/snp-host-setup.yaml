@@ -75,13 +75,13 @@ jobs:
             ./snp.sh launch-guest
          
           
-  trigger_pr_tests:
-    runs-on: self-hosted
-    # needs:  wait_time_after_reboot
-    timeout-minutes: 30 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+  # trigger_pr_tests:
+  #   runs-on: self-hosted
+  #   # needs:  wait_time_after_reboot
+  #   timeout-minutes: 30 
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
 
-      - name: Trigger snpguest CI PR test on the self-hosted runner
-        run: python ~/automation_scripts/trigger_pr_tests.py
+  #     - name: Trigger snpguest CI PR test on the self-hosted runner
+  #       run: python ~/automation_scripts/trigger_pr_tests.py
