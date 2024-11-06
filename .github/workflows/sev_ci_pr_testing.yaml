@@ -78,7 +78,8 @@ jobs:
             if [[ ${is_guest_active} -eq 1 ]]; then  
               while [[ ${is_guest_active} -eq 0 ]]
               do
-                sleep $(( $sleep_timer + 3 ))
+                echo "Sleep for ${sleep_timer}"
+                sleep $(( ${sleep_timer} + 3 ))
                 is_guest_active=$(cat ${HOME}/is_guest_active)
               done              
             fi
