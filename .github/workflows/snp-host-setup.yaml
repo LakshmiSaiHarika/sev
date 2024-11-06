@@ -55,7 +55,26 @@ jobs:
   #       timeout-minutes: 15
   #       run: sleep 300s
   #       shell: bash
-        
+
+  launch_snp_guest:
+    runs-on: self-hosted
+    # needs:  wait_time_after_reboot
+    timeout-minutes: 30 
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Launches SNP guest on the self-hosted runner
+        run: |
+            echo "Launch SNP Guest..."
+  
+            # Downloads sev utility script to setup host SNP kernel
+            wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
+            chmod +x snp.sh
+            
+            ./snp.sh launch-guest
+         
+          
   trigger_pr_tests:
     runs-on: self-hosted
     # needs:  wait_time_after_reboot
