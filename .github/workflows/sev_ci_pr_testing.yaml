@@ -95,7 +95,7 @@ jobs:
             echo "Launch directory exists"
             check_and_launch_guest
           else
-            ./snp.sh launch-guest
+            echo "1" > "${HOME}/is_guest_active" && ./snp.sh launch-guest
           fi
     
       - name: Verify SNP on the guest via MSR
