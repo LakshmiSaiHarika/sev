@@ -75,6 +75,7 @@ jobs:
 
             # Wait for some time if qemu processes exists
             local sleep_timer=3
+            echo "Guest Active Status: ${is_guest_active}"
             if [[ ${is_guest_active} -eq 1 ]]; then  
               while [[ ${is_guest_active} -eq 0 ]]
               do
