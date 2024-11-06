@@ -70,22 +70,21 @@ jobs:
       - name: Launch SNP enabled guest
         run: |
           check_and_launch_guest() {           
-            local qemu_processes=$(ps aux | grep -i /home/virtee/snp/launch/snp-guest.img | grep -i snp-guest.img | grep -i LABEL=fedora)
-            # [[ -n "${qemu_processes}" ]] || { echo -e "No qemu processes currently running" ;./snp.sh launch-guest; }
+            local is_guest_active=$(cat ${HOME}/is_guest_active)
 
             # Wait for some time if qemu processes exists
             local sleep_timer=3
-            if [ -n "${qemu_processes}" ]; then  
-              while [[  -n "${qemu_processes}" ]]
+            if [[ ${is_guest_active} -eq 1 ]]; then  
+              while [[ ${is_guest_active} -eq 0 ]]
               do
-                sleep $(( $sleep_timer + 1 ))
-                qemu_processes=$(ps aux | grep -i /home/virtee/snp/launch/snp-guest.img | grep -i snp-guest.img | grep -i LABEL=fedora)
+                sleep $(( $sleep_timer + 3 ))
+                is_guest_active=$(cat ${HOME}/is_guest_active)
               done              
             fi
 
             # Launch SNP Guest
             echo -e "No qemu processes currently running" 
-            ./snp.sh launch-guest;
+            echo "1" > "${HOME}/is_guest_active" && ./snp.sh launch-guest
           }
           
           rm -rf ~/snp.sh
@@ -182,3 +181,6 @@ jobs:
 
           cargo test
           EOF"
+
+      - name: Reset guest active status after PR test finishes
+        run: echo "0" > "${HOME}/is_guest_active"
