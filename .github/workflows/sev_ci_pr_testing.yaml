@@ -76,7 +76,7 @@ jobs:
             # Wait for some time if qemu processes exists
             local sleep_timer=3
             if [ -n "${qemu_processes}" ]; then  
-              while [[  -n "${guest_state}" ]]
+              while [[  -n "${qemu_processes}" ]]
               do
                 sleep $(( $sleep_timer + 1 ))
                 qemu_processes=$(ps aux | grep -i /home/virtee/snp/launch/snp-guest.img | grep -i snp-guest.img | grep -i LABEL=fedora)
