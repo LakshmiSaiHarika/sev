@@ -70,36 +70,18 @@ jobs:
 
       - name: Launch SNP enabled guest
         run: |
-          check_and_launch_guest() {           
-            local is_guest_active=$(cat ${HOME}/is_guest_active)
-
-            # Wait for some time if qemu processes exists
-            local sleep_timer=3
-            echo "Guest Active Status: ${is_guest_active}"
-            if [[ ${is_guest_active} -eq 1 ]]; then  
-              while [[ ${is_guest_active} -eq 1 ]]
-              do
-                echo "Sleep for ${sleep_timer}"
-                sleep $(( ${sleep_timer} + 3 ))
-                is_guest_active=$(cat ${HOME}/is_guest_active)
-              done              
-            fi
-
-            # Launch SNP Guest
-            echo -e "No qemu processes currently running" 
-            echo "1" > "${HOME}/is_guest_active" && ./snp.sh launch-guest
-          }
-          
           rm -rf ~/snp.sh
           wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
           chmod +x snp.sh
-
-          if [ -d "${HOME}/snp/launch" ]; then  
-            echo "Launch directory exists"
-            check_and_launch_guest
-          else
-            echo "1" > "${HOME}/is_guest_active" && ./snp.sh launch-guest
-          fi
+          
+          export GUEST_NAME=snp-guest-${{ github.event.inputs.pull_request_number }}
+          
+          next_available_port=$(bash ${HOME}/automation_scripts/next_available_port.sh)
+          export HOST_SSH_PORT=${next_available_port}
+          
+          ./snp.sh launch-guest
+          cat ~/snp/launch/${GUEST_NAME}/qemu.cmdline
+          
     
       - name: Verify SNP on the guest via MSR
         run: |
@@ -184,19 +166,3 @@ jobs:
 
           cargo test
           EOF"
-
-      - name: Reset guest active status after PR test finishes
-        run: echo "0" > "${HOME}/is_guest_active"
-        
-  reset_guest_active_status:
-    runs-on: self-hosted
-    needs: snp_guest_tests
-    if: success() || failure()
-    timeout-minutes: 30 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Reset guest active status after PR test finishes
-        run: echo "0" > "${HOME}/is_guest_active"
-
