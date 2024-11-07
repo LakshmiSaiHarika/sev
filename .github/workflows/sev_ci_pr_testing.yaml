@@ -71,10 +71,11 @@ jobs:
       - name: Set variable from bash
         run: |
           my_variable="Hello World!"
-          echo "::set-output name=my_variable::$my_variable"
+          # echo "::set-output name=my_variable::$my_variable"
+          echo "{set_my_variable}={${my_variable}}" >> $GITHUB_OUTPUT
       
       - name: Use the variable
-        run: echo "${{ steps.set-variable.outputs.my_variable }}"
+        run: echo "${{ steps.set-variable.outputs.set_my_variable }}"
 
       - name: Launch SNP enabled guest
         run: |
