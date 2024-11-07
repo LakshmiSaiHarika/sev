@@ -68,6 +68,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Set variable from bash
+        run: |
+          my_variable="Hello World!"
+          echo "::set-output name=my_variable::$my_variable"
+      
+      - name: Use the variable
+        run: echo "${{ steps.set-variable.outputs.my_variable }}"
+
       - name: Launch SNP enabled guest
         run: |
           rm -rf ~/snp.sh
