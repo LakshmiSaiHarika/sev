@@ -68,14 +68,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set the value
+      - name: Set the next available port number
         id: step_one
         run: |
-            echo "FOO=abcdef" >> $GITHUB_ENV
+            echo "next_available_port=$(bash ${HOME}/automation_scripts/next_available_port.sh)" >> $GITHUB_ENV
+            
       - name: Use the value
         id: step_two
         run: |
-            echo "${{ env.FOO }}"
+            echo "${{ env.next_available_port }}"
 
       - name: Launch SNP enabled guest
         run: |
