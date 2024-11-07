@@ -96,7 +96,7 @@ jobs:
       - name: Verify SNP on the guest via MSR
         run: |
           ssh_guest_command() {
-              GUEST_SSH_KEY_PATH="${HOME}/snp/launch/snp-guest-key"
+              GUEST_SSH_KEY_PATH="${HOME}/snp/launch/snp-guest-9/snp-guest-9-key"
               if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
                 echo "SSH key not present, cannot verify guest SNP enabled."
                 exit 1
