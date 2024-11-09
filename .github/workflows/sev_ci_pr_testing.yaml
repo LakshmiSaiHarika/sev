@@ -71,7 +71,8 @@ jobs:
       - name: Set the next available port number
         id: step_one
         run: |
-            echo "next_available_port=$(bash ${HOME}/automation_scripts/next_available_port.sh)" >> $GITHUB_ENV
+            # echo "next_available_port=$(bash ${HOME}/automation_scripts/next_available_port.sh)" >> $GITHUB_ENV
+            echo "next_available_port=$(python ${HOME}/automation_scripts/handle_guest_network_ports.py get-next-available-port-number)" >> $GITHUB_ENV
             
       - name: Use the value
         id: step_two
@@ -86,8 +87,8 @@ jobs:
           
           export GUEST_NAME=snp-guest-${{ github.event.inputs.pull_request_number }}
           
-          next_available_port=$(bash ${HOME}/automation_scripts/next_available_port.sh)
-          export HOST_SSH_PORT=${next_available_port}
+          # next_available_port=$(bash ${HOME}/automation_scripts/next_available_port.sh)
+          export HOST_SSH_PORT=${{ env.next_available_port }}
           
           ./snp.sh launch-guest
           cat ~/snp/launch/${GUEST_NAME}/qemu.cmdline
