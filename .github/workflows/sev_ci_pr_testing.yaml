@@ -186,10 +186,12 @@ jobs:
            ./snp.sh stop-guests
            
       - name: Remove current active guest network port from GHAW network port file
+        if: success() || failure()
         run: |
            python ${HOME}/automation_scripts/handle_guest_network_ports.py remove-ghaw-used-port-number ${{ env.next_available_port }}
 
       - name: Cleanup SNP guest folder
+        if: success() || failure()
         run: |
            rm -rf ${HOME}/snp/launch/snp-guest-${{ github.event.inputs.pull_request_number }}
 
