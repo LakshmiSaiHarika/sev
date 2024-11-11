@@ -178,3 +178,25 @@ jobs:
 
           cargo test
           EOF"
+
+  remove_snp_guest:
+    runs-on: self-hosted
+    needs: snp_host_tests
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Stop the active running SNP guest for this PR
+        run: |
+             export GUEST_NAME=snp-guest-${{ github.event.inputs.pull_request_number }}
+             export HOST_SSH_PORT=${{ env.next_available_port }}
+             ./snp.sh stop-guests
+             
+      - name: Remove current active guest network port from GHAW network port file
+        run: |
+             python ${HOME}/automation_scripts/handle_guest_network_ports.py remove-ghaw-used-port-number ${{ env.next_available_port }}
+
+      - name: Cleanup SNP guest folder
+        run: |
+             rm -rf ${HOME}/snp/launch/snp-guest-${{ github.event.inputs.pull_request_number }}
+    
