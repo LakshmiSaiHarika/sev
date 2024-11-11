@@ -77,7 +77,7 @@ jobs:
       - name: Get qemu used ports
         id: qemu_used_ports
         run: |
-            echo "qemu_used_ports=$(p aux | grep -i qemu)" >> $GITHUB_ENV
+            echo "qemu_used_ports=$(ps aux | grep -i qemu)" >> $GITHUB_ENV
             
       - name: Use the value
         id: step_two
