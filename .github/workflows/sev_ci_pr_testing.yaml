@@ -69,7 +69,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set the next available port number
-        id: step_one
         run: |
             echo "next_available_port=$(python ${HOME}/automation_scripts/handle_guest_network_ports.py get-next-available-port-number)" >> $GITHUB_ENV
             
