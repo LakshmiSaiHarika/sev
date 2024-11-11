@@ -68,6 +68,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Sleep for 35 seconds
+        run: sleep 35
+        
       - name: Set the next available port number
         run: |
             echo "next_available_port=$(python ${HOME}/automation_scripts/handle_guest_network_ports.py get-next-available-port-number)" >> $GITHUB_ENV
