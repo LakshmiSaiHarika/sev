@@ -181,7 +181,7 @@ jobs:
 
   remove_snp_guest:
     runs-on: self-hosted
-    needs: snp_host_tests
+    needs: snp_guest_tests
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
