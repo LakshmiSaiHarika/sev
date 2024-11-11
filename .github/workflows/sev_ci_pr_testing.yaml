@@ -149,7 +149,7 @@ jobs:
                 exit 1
               fi
               command="$1"
-              ssh -p 10022 -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
+              ssh -p ${{ env.next_available_port }} -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
           }
 
           # Install sev dependencies as a root user
