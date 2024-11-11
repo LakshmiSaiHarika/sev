@@ -73,11 +73,20 @@ jobs:
         run: |
             # echo "next_available_port=$(bash ${HOME}/automation_scripts/next_available_port.sh)" >> $GITHUB_ENV
             echo "next_available_port=$(python ${HOME}/automation_scripts/handle_guest_network_ports.py get-next-available-port-number)" >> $GITHUB_ENV
+
+      - name: Get qemu used ports
+        id: qemu_used_ports
+        run: |
+            echo "qemu_used_ports=$(p aux | grep -i qemu)" >> $GITHUB_ENV
             
       - name: Use the value
         id: step_two
         run: |
             echo "${{ env.next_available_port }}"
+
+      - name: Show qemu used ports
+        run: |
+            echo "${{ env.qemu_used_ports }}"
 
       - name: Launch SNP enabled guest
         run: |
