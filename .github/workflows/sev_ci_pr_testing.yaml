@@ -77,7 +77,9 @@ jobs:
       - name: Get qemu used ports
         id: qemu_used_ports
         run: |
-            echo "qemu_used_ports=$(ps aux | grep -i qemu)" 
+            # echo "qemu_used_ports=$(ps aux | grep -i qemu)" 
+            echo "sudo netstat -plnt | grep ':10022'" 
+            
             
       - name: Use the value
         id: step_two
