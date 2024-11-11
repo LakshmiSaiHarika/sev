@@ -71,12 +71,10 @@ jobs:
       - name: Set the next available port number
         id: step_one
         run: |
-            # echo "next_available_port=$(bash ${HOME}/automation_scripts/next_available_port.sh)" >> $GITHUB_ENV
             echo "next_available_port=$(python ${HOME}/automation_scripts/handle_guest_network_ports.py get-next-available-port-number)" >> $GITHUB_ENV
             
             
       - name: Use the value
-        id: step_two
         run: |
             echo "${{ env.next_available_port }}"
 
@@ -143,7 +141,8 @@ jobs:
         run: |
           ssh_guest_command() {
               # SSH guest commands
-              GUEST_SSH_KEY_PATH="${HOME}/snp/launch/snp-guest-9/snp-guest-9-key"
+              local guest_name=snp-guest-${{ github.event.inputs.pull_request_number }}
+              GUEST_SSH_KEY_PATH="${HOME}/snp/launch/${guest_name}/${guest_name}-key"
               if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
                 echo "SSH key not present, cannot verify guest SNP enabled."
                 exit 1
