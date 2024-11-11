@@ -73,12 +73,6 @@ jobs:
         run: |
             # echo "next_available_port=$(bash ${HOME}/automation_scripts/next_available_port.sh)" >> $GITHUB_ENV
             echo "next_available_port=$(python ${HOME}/automation_scripts/handle_guest_network_ports.py get-next-available-port-number)" >> $GITHUB_ENV
-
-      - name: Get qemu used ports 10022
-        id: qemu_used_ports
-        run: |
-            # echo "qemu_used_ports=$(ps aux | grep -i qemu)" 
-            echo "$(sudo netstat -plnt | grep ':10022')" 
             
             
       - name: Use the value
