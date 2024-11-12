@@ -41,19 +41,20 @@ jobs:
               event_pr_number=${{ github.event.pull_request.number }}
               event_pr_branch=${{ github.head_ref }}
             elif [ ${{ github.event_name }} == "workflow_dispatch" ]; then
-              echo "workflow dispatch"
               event_pr_number=${{ github.event.inputs.pull_request_number }}
               event_pr_branch=${{ github.event.inputs.pull_request_branch }}
             fi
 
-            echo "pr_number=${event_pr_number}" 
-            echo "pr_branch=${event_pr_branch}" 
             echo "pr_number=${event_pr_number}" >> $GITHUB_ENV
             echo "pr_branch=${event_pr_branch}" >> $GITHUB_ENV
+
+      - name: Show the GH environment variable current values
+        run: |
+            echo "GH Action PR number = ${{ env.pr_number }}"
+            echo "GH Action PR branch = ${{ env.pr_branch }}"
             
       - name: SEV CI PR test on the host
         run: |
-              echo "Event name = ${{ github.event_name }}"
               # Give user access to /dev/sev to run cargo tests w/o permission issues
               sudo usermod -a -G kvm $USER
               sudo setfacl -m g:kvm:rw /dev/sev
@@ -227,3 +228,4 @@ jobs:
         run: |
            rm -rf ${HOME}/snp/launch/snp-guest-${{ github.event.inputs.pull_request_number }}
            ssh-keygen -R [localhost]:${{ env.next_available_port }}           
+           
