@@ -45,7 +45,9 @@ jobs:
               event_pr_number=${{ github.event.inputs.pull_request_number }}
               event_pr_branch=${{ github.event.inputs.pull_request_branch }}
             fi
-             
+
+            echo "pr_number=${event_pr_number}" 
+            echo "pr_branch=${event_pr_branch}" 
             echo "pr_number=${event_pr_number}" >> $GITHUB_ENV
             echo "pr_branch=${event_pr_branch}" >> $GITHUB_ENV
             
