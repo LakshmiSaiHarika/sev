@@ -122,8 +122,6 @@ jobs:
           chmod +x snp.sh
           
           export GUEST_NAME=snp-guest-${{ github.event.inputs.pull_request_number }}
-          
-          # next_available_port=$(bash ${HOME}/automation_scripts/next_available_port.sh)
           export HOST_SSH_PORT=${{ env.next_available_port }}
           
           ./snp.sh launch-guest
