@@ -64,7 +64,7 @@ jobs:
               cd sev
               
               # Checkout the PR branch
-              if [ ${{ github.event_name }} == "pull_request_target" || ${{ github.event_name }} == "workflow_dispatch" ]; then
+              if [[ ${{ github.event_name }} == "pull_request_target" || ${{ github.event_name }} == "workflow_dispatch" ]]; then
                 git fetch origin pull/${{ env.pr_number }}/head:${{ env.pr_branch }}
                 git switch ${{ env.pr_branch }}
               fi
