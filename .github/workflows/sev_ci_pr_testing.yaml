@@ -123,7 +123,7 @@ jobs:
           wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
           chmod +x snp.sh
           
-          export GUEST_NAME=snp-guest-${{ github.event.inputs.pull_request_number }}
+          export GUEST_NAME=snp-guest-sev-${{ github.event.inputs.pull_request_number }}
           export HOST_SSH_PORT=${{ env.next_available_port }}
           
           ./snp.sh launch-guest
