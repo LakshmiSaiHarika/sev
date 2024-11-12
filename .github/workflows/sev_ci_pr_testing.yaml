@@ -113,7 +113,7 @@ jobs:
         
       - name: Show the GH environment variable current values
         run: |
-            echo "current guest port to use = ${{ env.next_available_port }}"
+            echo "current guest port in use = ${{ env.next_available_port }}"
             echo "GH Action PR number = ${{ env.pr_number }}"
             echo "GH Action PR branch = ${{ env.pr_branch }}"
 
@@ -202,7 +202,7 @@ jobs:
           cd ~/sev
 
           # Checkout the PR branch
-          if [ ${{ github.event_name }} == "pull_request_target" || ${{ github.event_name }} == "workflow_dispatch" ]; then
+          if [[ ${{ github.event_name }} == "pull_request_target" || ${{ github.event_name }} == "workflow_dispatch" ]]; then
             git fetch origin pull/${{ env.pr_number }}/head:${{ env.pr_branch }}
             git switch ${{ env.pr_branch }}
           fi
