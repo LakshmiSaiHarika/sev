@@ -75,6 +75,22 @@ jobs:
         run: |
             echo "next_available_port=$(python ${HOME}/automation_scripts/handle_guest_network_ports.py get-next-available-port-number)" >> $GITHUB_ENV
             
+      - name: Set the PR number and PR branch environment based on GH Action event type
+        run: |
+            event_pr_number=''
+            event_pr_branch=''
+            
+            if [ ${{ github.event_name }} == "pull_request_target" ]; then
+              event_pr_number=${{ github.event.pull_request.number }}
+              event_pr_branch=${{ github.head_ref }}
+            elif [ ${{ github.event_name }} == "workflow_dispatch" ]; then
+              event_pr_number=${{ github.event.inputs.pull_request_number }}
+              event_pr_branch=${{ github.event.inputs.pull_request_branch }}
+            fi
+              
+            echo "pr_number=$(event_pr_number)" >> $GITHUB_ENV
+            echo "pr_branch=$(event_pr_branch)" >> $GITHUB_ENV
+        
             
       - name: Use the value
         run: |
