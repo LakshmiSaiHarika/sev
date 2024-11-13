@@ -93,7 +93,7 @@ jobs:
         
       - name: Set the next available guest network port number
         run: |
-            echo "next_available_port=$(python ${HOME}/automation_scripts/handle_guest_network_ports.py get-next-available-port-number)" >> $GITHUB_ENV
+            echo "guest_port_in_use=$(python ${HOME}/automation_scripts/handle_guest_network_ports.py get-next-available-port-number)" >> $GITHUB_ENV
             
       - name: Set the PR number and PR branch environment based on GH Action event type
         run: |
@@ -114,7 +114,7 @@ jobs:
         
       - name: Show the GH environment variable current values
         run: |
-            echo "current guest port in use = ${{ env.next_available_port }}"
+            echo "current guest port in use = ${{ env.guest_port_in_use }}"
             echo "GH Action PR number = ${{ env.pr_number }}"
             echo "GH Action PR branch = ${{ env.pr_branch }}"
 
@@ -125,7 +125,7 @@ jobs:
           chmod +x snp.sh
           
           export GUEST_NAME=snp-guest-sev-${{ github.event.inputs.pull_request_number }}
-          export HOST_SSH_PORT=${{ env.next_available_port }}
+          export HOST_SSH_PORT=${{ env.guest_port_in_use }}
           
           ./snp.sh launch-guest
           cat ~/snp/launch/${GUEST_NAME}/qemu.cmdline
@@ -141,7 +141,7 @@ jobs:
                 exit 1
               fi
               command="$1"
-              ssh -p ${{ env.next_available_port }} -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
+              ssh -p ${{ env.guest_port_in_use }} -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
             }
 
           verify_snp_guest_msr(){
@@ -186,7 +186,7 @@ jobs:
                 exit 1
               fi
               command="$1"
-              ssh -p ${{ env.next_available_port }} -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
+              ssh -p ${{ env.guest_port_in_use }} -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
           }
 
           # Install sev dependencies as a root user
@@ -215,17 +215,17 @@ jobs:
         continue-on-error: true
         run: |
            export GUEST_NAME=snp-guest-${{ github.event.inputs.pull_request_number }}
-           export HOST_SSH_PORT=${{ env.next_available_port }}
+           export HOST_SSH_PORT=${{ env.guest_port_in_use }}
            ./snp.sh stop-guests
            
       - name: Remove current active guest network port from GHAW network port file
         if: success() || failure()
         run: |
-           python ${HOME}/automation_scripts/handle_guest_network_ports.py remove-ghaw-used-port-number ${{ env.next_available_port }}
+           python ${HOME}/automation_scripts/handle_guest_network_ports.py remove-ghaw-used-port-number ${{ env.guest_port_in_use }}
 
       - name: Cleanup SNP guest folder
         if: success() || failure()
         run: |
            rm -rf ${HOME}/snp/launch/snp-guest-${{ github.event.inputs.pull_request_number }}
-           ssh-keygen -R [localhost]:${{ env.next_available_port }}           
+           ssh-keygen -R [localhost]:${{ env.guest_port_in_use }}           
            
