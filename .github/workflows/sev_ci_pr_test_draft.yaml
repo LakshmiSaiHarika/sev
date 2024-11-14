@@ -47,7 +47,7 @@ jobs:
             echo "GH Action PR number = ${{ env.pr_number }}"
             echo "GH Action PR branch = ${{ env.pr_branch }}"
             
-      - name: SEV CI PR test on the host
+      - name: Run sev library cargo test on the host(without flags)
         run: |
               # Give user access to /dev/sev to run cargo tests w/o permission issues
               sudo usermod -a -G kvm $USER
@@ -130,8 +130,10 @@ jobs:
           source ./.github/workflows/snp_function_declarations.sh
           verify_snp_guest_msr ${{ github.event.inputs.pull_request_number }} ${{ env.guest_port_in_use }}
 
-      - name: SEV CI PR test on the guest
+      - name: Run sev library cargo test on the guest(without flags)
         run: |
+          source ./.github/workflows/snp_function_declarations.sh
+          
           # Install sev dependencies as a root user
            ssh_guest_command "sudo su - <<EOF
            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
@@ -170,5 +172,5 @@ jobs:
         if: success() || failure()
         run: |
            rm -rf ${HOME}/snp/launch/snp-guest-${{ github.event.inputs.pull_request_number }}
-           ssh-keygen -R [localhost]:${{ env.guest_port_in_use }}           
-           
+           ssh-keygen -R [localhost]:${{ env.guest_port_in_use }}
+  
