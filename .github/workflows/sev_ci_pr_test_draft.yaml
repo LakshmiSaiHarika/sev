@@ -127,47 +127,8 @@ jobs:
     
       - name: Verify SNP on the guest via MSR
         run: |
-          ssh_guest_command() {
-              local guest_name=snp-guest-sev-${{ github.event.inputs.pull_request_number }}
-              local GUEST_SSH_KEY_PATH="${HOME}/snp/launch/${guest_name}/${guest_name}-key"
-              if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
-                echo "SSH key not present, cannot verify guest SNP enabled."
-                exit 1
-              fi
-              command="$1"
-              ssh -p ${{ env.guest_port_in_use }} -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
-            }
-
-          verify_snp_guest_msr(){
-            # Install guest rdmsr package dependencies to insert guest msr module
-            ssh_guest_command "sudo dnf install -y msr-tools > /dev/null 2>&1" > /dev/null 2>&1
-            ssh_guest_command "sudo modprobe msr" > /dev/null 2>&1
-            local guest_msr_read=$(ssh_guest_command "sudo rdmsr -p 0 0xc0010131")
-            guest_msr_read=$(echo "${guest_msr_read}" | tr -d '\r' | bc)
-
-            # Map all the sev features in a single associative array for all guest SEV features
-            declare -A actual_sev_snp_bit_status=(
-              [SEV]=$(( ( guest_msr_read >> 0) & 1))
-              [SEV-ES]=$(( (guest_msr_read >> 1) & 1))
-              [SNP]=$(( (guest_msr_read >> 2) & 1))
-            )
-
-            local sev_snp_error=""
-            for sev_snp_key in "${!actual_sev_snp_bit_status[@]}";
-            do
-                if [[ ${actual_sev_snp_bit_status[$sev_snp_key]} != 1 ]]; then
-                  # Capture the guest SEV/SNP bit value mismatch
-                  sev_snp_error+=$(echo "$sev_snp_key feature is not active on the guest.\n");
-                fi
-            done
-
-            if [[ ! -z "${sev_snp_error}" ]]; then
-              >&2 echo -e "ERROR: ${sev_snp_error}"
-              return 1
-            fi
-           }
-
-          verify_snp_guest_msr
+          source ./.github/workflows/snp_function_declarations.sh
+          verify_snp_guest_msr ${{ github.event.inputs.pull_request_number }} ${{ env.guest_port_in_use }}
 
       - name: SEV CI PR test on the guest
         run: |
