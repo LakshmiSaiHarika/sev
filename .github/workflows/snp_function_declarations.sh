@@ -8,7 +8,7 @@ if sudo dmesg | grep -i "SEV-SNP enabled" 2>&1 >/dev/null; then
 fi
 }
 
-install_rust_on_host() {
+check_rust_on_host() {
   # Install Rust on the host
   source "${HOME}/.cargo/env" 2>/dev/null || true
   if ! command -v rustc &> /dev/null; then
