@@ -64,13 +64,8 @@ jobs:
                 git switch ${{ env.pr_branch }}
               fi
 
-              # Install Rust on the host
-              source "${HOME}/.cargo/env" 2>/dev/null || true
-              if ! command -v rustc &> /dev/null; then
-                echo "Installing Rust..."
-                curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
-                source "${HOME}/.cargo/env" 2>/dev/null
-              fi
+              source ./.github/workflows/snp_function_declarations.sh
+              install_rust_on_host
 
               # Cargo SEV PR test on the host
               cargo test
