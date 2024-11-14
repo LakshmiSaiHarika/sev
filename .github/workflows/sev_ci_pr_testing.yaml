@@ -129,7 +129,7 @@ jobs:
       - name: Verify SNP on the guest via MSR
         run: |
           source ./.github/workflows/snp_function_declarations.sh
-          verify_snp_guest_msr
+          verify_snp_guest_msr ${{ github.event.inputs.pull_request_number }} ${{ env.guest_port_in_use }}
 
       - name: Run sev library cargo test on the guest(without flags)
         run: |
