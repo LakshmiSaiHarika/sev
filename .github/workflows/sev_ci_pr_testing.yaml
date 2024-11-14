@@ -53,6 +53,10 @@ jobs:
               sudo usermod -a -G kvm $USER
               sudo setfacl -m g:kvm:rw /dev/sev
 
+              # Install dependencies on the host
+              source ./.github/workflows/snp_function_declarations.sh
+              check_rust_on_host
+
               # Fetch and checkout SEV PR on the host
               rm -rf ~/sev
               git clone https://github.com/LakshmiSaiHarika/sev.git
@@ -62,14 +66,6 @@ jobs:
               if [[ ${{ github.event_name }} == "pull_request_target" || ${{ github.event_name }} == "workflow_dispatch" ]]; then
                 git fetch origin pull/${{ env.pr_number }}/head:${{ env.pr_branch }}
                 git switch ${{ env.pr_branch }}
-              fi
-
-              # Install Rust on the host
-              source "${HOME}/.cargo/env" 2>/dev/null || true
-              if ! command -v rustc &> /dev/null; then
-                echo "Installing Rust..."
-                curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
-                source "${HOME}/.cargo/env" 2>/dev/null
               fi
 
               # Cargo SEV PR test on the host
