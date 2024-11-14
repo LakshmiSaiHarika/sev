@@ -24,10 +24,10 @@ ssh_guest_command() {
 
 verify_snp_guest_msr(){
   # Install guest rdmsr package dependencies to insert guest msr module
-  # command="$1" $2=${{ github.event.inputs.pull_request_number }} guest_port_in_use="$3"
-  ssh_guest_command "sudo dnf install -y msr-tools > /dev/null 2>&1" $2 $3> /dev/null 2>&1
-  ssh_guest_command "sudo modprobe msr" $2 $3 > /dev/null 2>&1
-  local guest_msr_read=$(ssh_guest_command "sudo rdmsr -p 0 0xc0010131"  $2 $3)
+  # $1=${{ github.event.inputs.pull_request_number }} guest_port_in_use="$2"
+  ssh_guest_command "sudo dnf install -y msr-tools > /dev/null 2>&1" $1 $2> /dev/null 2>&1
+  ssh_guest_command "sudo modprobe msr" $1 $2 > /dev/null 2>&1
+  local guest_msr_read=$(ssh_guest_command "sudo rdmsr -p 0 0xc0010131"  $1 $2)
   guest_msr_read=$(echo "${guest_msr_read}" | tr -d '\r' | bc)
 
   # Map all the sev features in a single associative array for all guest SEV features
