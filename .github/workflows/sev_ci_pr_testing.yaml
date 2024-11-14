@@ -114,7 +114,7 @@ jobs:
           wget https://raw.githubusercontent.com/LakshmiSaiHarika/sev-utils/Fedora-Latest-SNP-kernel-Upstream/tools/snp.sh
           chmod +x snp.sh
           
-          export GUEST_NAME=snp-guest-sev-${{ github.event.inputs.pull_request_number }}
+          export GUEST_NAME=snp-guest-sev-${{ env.pr_number }}
           export HOST_SSH_PORT=${{ env.guest_port_in_use }}
           
           ./snp.sh launch-guest
@@ -125,7 +125,7 @@ jobs:
       - name: Verify SNP on the guest via MSR
         run: |
           source ./.github/workflows/snp_function_declarations.sh
-          verify_snp_guest_msr ${{ github.event.inputs.pull_request_number }} ${{ env.guest_port_in_use }}
+          verify_snp_guest_msr ${{ env.pr_number }} ${{ env.guest_port_in_use }}
 
       - name: Run sev library cargo test on the guest(without flags)
         run: |
@@ -136,7 +136,7 @@ jobs:
            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
            source "${HOME}/.cargo/env" 2>/dev/null
            sudo dnf install -y git gcc
-          EOF" ${{ github.event.inputs.pull_request_number }} ${{ env.guest_port_in_use }}
+          EOF" ${{ env.pr_number }} ${{ env.guest_port_in_use }}
 
           # Clean up and perform PR test on sev library as root user to fix OS permission denied issues
           ssh_guest_command "sudo su - <<EOF
@@ -151,12 +151,12 @@ jobs:
           fi 
           
           cargo test
-          EOF" ${{ github.event.inputs.pull_request_number }} ${{ env.guest_port_in_use }}
+          EOF" ${{ env.pr_number }} ${{ env.guest_port_in_use }}
           
       - name: Stop the active running SNP guest for this PR
         continue-on-error: true
         run: |
-           export GUEST_NAME=snp-guest-${{ github.event.inputs.pull_request_number }}
+           export GUEST_NAME=snp-guest-${{ env.pr_number }}
            export HOST_SSH_PORT=${{ env.guest_port_in_use }}
            ./snp.sh stop-guests
            
@@ -168,5 +168,5 @@ jobs:
       - name: Cleanup SNP guest folder
         if: success() || failure()
         run: |
-           rm -rf ${HOME}/snp/launch/snp-guest-${{ github.event.inputs.pull_request_number }}
+           rm -rf ${HOME}/snp/launch/snp-guest-${{ env.pr_number }}
            ssh-keygen -R [localhost]:${{ env.guest_port_in_use }}           
