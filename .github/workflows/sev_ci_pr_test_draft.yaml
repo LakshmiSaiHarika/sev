@@ -132,24 +132,12 @@ jobs:
 
       - name: SEV CI PR test on the guest
         run: |
-          ssh_guest_command() {
-              # SSH guest commands
-              local guest_name=snp-guest-sev-${{ github.event.inputs.pull_request_number }}
-              GUEST_SSH_KEY_PATH="${HOME}/snp/launch/${guest_name}/${guest_name}-key"
-              if [ ! -f "${GUEST_SSH_KEY_PATH}" ]; then
-                echo "SSH key not present, cannot verify guest SNP enabled."
-                exit 1
-              fi
-              command="$1"
-              ssh -p ${{ env.guest_port_in_use }} -i "${GUEST_SSH_KEY_PATH}" -o "StrictHostKeyChecking no" -o "PasswordAuthentication=no" -o ConnectTimeout=1 amd@localhost "${command}"
-          }
-
           # Install sev dependencies as a root user
            ssh_guest_command "sudo su - <<EOF
            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
            source "${HOME}/.cargo/env" 2>/dev/null
            sudo dnf install -y git gcc
-          EOF"
+          EOF" ${{ github.event.inputs.pull_request_number }} ${{ env.guest_port_in_use }}
 
           # Clean up and perform PR test on sev library as root user to fix OS permission denied issues
           ssh_guest_command "sudo su - <<EOF
@@ -161,10 +149,10 @@ jobs:
           if [[ ${{ github.event_name }} == "pull_request_target" || ${{ github.event_name }} == "workflow_dispatch" ]]; then
             git fetch origin pull/${{ env.pr_number }}/head:${{ env.pr_branch }}
             git switch ${{ env.pr_branch }}
-          fi
+          fi 
           
           cargo test
-          EOF"
+          EOF" ${{ github.event.inputs.pull_request_number }} ${{ env.guest_port_in_use }}
 
       - name: Stop the active running SNP guest for this PR
         continue-on-error: true
