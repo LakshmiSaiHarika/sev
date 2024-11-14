@@ -8,6 +8,16 @@ if sudo dmesg | grep -i "SEV-SNP enabled" 2>&1 >/dev/null; then
 fi
 }
 
+install_rust_on_host() {
+  # Install Rust on the host
+  source "${HOME}/.cargo/env" 2>/dev/null || true
+  if ! command -v rustc &> /dev/null; then
+    echo "Installing Rust..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | sh -s -- -y
+    source "${HOME}/.cargo/env" 2>/dev/null
+  fi
+}
+
 ssh_guest_command() {
     # local guest_name=snp-guest-sev-${{ github.event.inputs.pull_request_number }}
     local guest_name=snp-guest-sev-$2
