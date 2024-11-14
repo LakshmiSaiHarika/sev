@@ -122,8 +122,9 @@ jobs:
           export HOST_SSH_PORT=${{ env.guest_port_in_use }}
           
           ./snp.sh launch-guest
-          cat ~/snp/launch/${GUEST_NAME}/qemu.cmdline
-          
+
+      - name: Show SNP enabled guest qemu commandline 
+        run:  cat ~/snp/launch/${GUEST_NAME}/qemu.cmdline  
     
       - name: Verify SNP on the guest via MSR
         run: |
