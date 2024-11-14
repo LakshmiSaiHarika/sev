@@ -47,7 +47,7 @@ jobs:
             echo "GH Action PR number = ${{ env.pr_number }}"
             echo "GH Action PR branch = ${{ env.pr_branch }}"
             
-      - name: SEV CI PR test on the host
+      - name:  Run sev library cargo test on the host(without flags)
         run: |
               # Give user access to /dev/sev to run cargo tests w/o permission issues
               sudo usermod -a -G kvm $USER
