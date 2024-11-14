@@ -53,6 +53,10 @@ jobs:
               sudo usermod -a -G kvm $USER
               sudo setfacl -m g:kvm:rw /dev/sev
 
+              # Install dependencies on the host
+              source ./.github/workflows/snp_function_declarations.sh
+              install_rust_on_host
+              
               # Fetch and checkout SEV PR on the host
               rm -rf ~/sev
               git clone https://github.com/LakshmiSaiHarika/sev.git
@@ -63,9 +67,6 @@ jobs:
                 git fetch origin pull/${{ env.pr_number }}/head:${{ env.pr_branch }}
                 git switch ${{ env.pr_branch }}
               fi
-
-              source ./.github/workflows/snp_function_declarations.sh
-              install_rust_on_host
 
               # Cargo SEV PR test on the host
               cargo test
