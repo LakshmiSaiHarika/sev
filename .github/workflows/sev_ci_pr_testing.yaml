@@ -58,7 +58,6 @@ jobs:
               check_rust_on_host
 
               # Fetch and checkout SEV PR on the host
-              rm -rf ~/sev
               git clone https://github.com/LakshmiSaiHarika/sev.git
               cd sev
               
@@ -70,6 +69,10 @@ jobs:
 
               # Cargo SEV PR test on the host
               cargo test
+              
+      - name: Cleanup snphost folder
+        if: success() || failure()
+        run: rm -rf ~/sev
 
   snp_guest_tests:
     runs-on: self-hosted
